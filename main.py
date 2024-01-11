@@ -23,7 +23,7 @@ async def wp_socket(ws:WebSocket):
                con_list["client"]=ws
 
                while True:
-                   await ws.send_json({"connect":True})
+                   await ws.receive_json()
 
              except WebSocketDisconnect:
                      del con_list["client"]
