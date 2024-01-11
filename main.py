@@ -13,19 +13,19 @@ con_list:Dict[str,WebSocket]={}
 
 @app.post('/send')
 async def send_data(data:Location):
-       con_list["1"].send_json({'lat':data.lat,"long":data.long})
+       con_list["client"].send_json({'lat':data.lat,"long":data.long})
 
 @app.websocket('/connect')
 async def wp_socket(ws:WebSocket):
              try:
 
                await ws.accept()
-               con_list["1"]=ws
+               con_list["client"]=ws
 
                while True:
                     pass
              except WebSocketDisconnect:
-                     del con_list["1"]
+                     del con_list["client"]
                      ws.close()
 
 
