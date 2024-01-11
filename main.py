@@ -14,6 +14,8 @@ con_list:Dict[str,WebSocket]={}
 @app.post('/send')
 async def send_data(data:Location):
        con_list["client"].send_json({'lat':data.lat,"long":data.long})
+       
+       return {"message":"Done"}
 
 @app.websocket('/connect')
 async def wp_socket(ws:WebSocket):
