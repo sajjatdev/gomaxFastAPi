@@ -14,13 +14,13 @@ app=FastAPI()
 
 
 con_list:list[WebSocket]=[]
-
-@app.websocket('/connect/')
+@app.websocket('/connect')
 async def wp_socket(ws:WebSocket):
              try:
 
                await ws.accept()
-               con_list.append(ws)
+
+              #  con_list.append(ws)
 
                while True:
                    await ws.receive_json()
