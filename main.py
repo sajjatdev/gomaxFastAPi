@@ -13,27 +13,30 @@ Base.metadata.create_all(bind=engine)
 app=FastAPI()
 
 
-con_list:Dict[str,WebSocket]={}
-@app.websocket('/connect')
+con_list:list[WebSocket]=[]
+
+@app.websocket('/connect/')
 async def wp_socket(ws:WebSocket):
              try:
 
                await ws.accept()
-               con_list["client"]= ws
+               con_list.append(ws)
 
                while True:
                    await ws.receive_json()
 
              except WebSocketDisconnect:
-                     del con_list["client"]
+                     con_list.remove(ws)
                      ws.close()
+                     
 
 @app.post('/location/create')
 async def location_create(data:LocationSchema,db:Session=Depends(get_db)):
       
        try:
-    
-           await con_list["client"].send_json({'lat':data.lat,"long":data.long,'dt':data.dt_date,'imei':data.device_imei,'speed':data.speed})
+           for element in con_list:    
+
+              await element.send_json({'lat':data.lat,"long":data.long,'dt':data.dt_date,'imei':data.device_imei,'speed':data.speed})
            
            location_data=Location(**data.dict())
            db.add(location_data) 
