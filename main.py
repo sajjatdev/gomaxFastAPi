@@ -1,5 +1,5 @@
 from fastapi import FastAPI,WebSocket,WebSocketDisconnect,Depends
-from typing import Dict
+from typing import Dict,List
 from sqlalchemy.orm import Session
 from Schema.device_schema import DeviceSchema
 from Schema.location_schema import LocationSchema
@@ -13,14 +13,14 @@ Base.metadata.create_all(bind=engine)
 app=FastAPI()
 
 
-con_list:list[WebSocket]=[]
+con_list:List[WebSocket]=[]
 @app.websocket('/connect')
 async def wp_socket(ws:WebSocket):
              try:
 
                await ws.accept()
 
-              #  con_list.append(ws)
+               con_list.append(ws)
 
                while True:
                    await ws.receive_json()
