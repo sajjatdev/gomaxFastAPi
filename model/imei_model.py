@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String,Float
+from sqlalchemy import Boolean, Column, Integer, String,Float,JSON
 from database.db import Base
 
 
@@ -19,3 +19,7 @@ class Location(Base):
     speed=Column(Integer)
     dt_date = Column(String)
     device_imei = Column(String)
+    angle=Column(Integer,default=0)
+    params =Column(JSON,default={})
+
+
