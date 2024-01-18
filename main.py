@@ -36,7 +36,7 @@ async def location_create(data:LocationSchema,db:Session=Depends(get_db)):
        try:
            for element in con_list:    
 
-              await element.send_json({'lat':data.lat,"long":data.long,'dt':data.dt_date,'imei':data.device_imei,'speed':data.speed})
+              await element.send_json(data.dict())
            
            location_data=Location(**data.dict())
            db.add(location_data) 
