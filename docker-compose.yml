@@ -1,27 +1,43 @@
-version: "3.3"
+version: "3.5"
 
 services:
-  webapp:
+  web_server:
     build: .
-    image: chatlist
-    container_name: chatlistcon
+    image: gomaxPosition
+    container_name: gomaxPositionCon
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
+    env_file:
+      - .env.prod
+    volumes:
+      - .:/gomaxPosition/
     depends_on:
       - postgres
 
   postgres:
     image: postgres:latest
-    container_name: postgres_container
-    environment:
-      POSTGRES_USER: gomaxuser
-      POSTGRES_PASSWORD: gomax123456
-      POSTGRES_DB: gomaxDB
-    ports:
-      - "5432:5432"
+    container_name: postgresdb
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql/data/
+    env_file:
+      - .env.prod
+    ports:
+      - "5435:5432"
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin123456
+    ports:
+      - "2050:80"
+    volumes:
+      - ./db_admin/pg_admin_server.json:/pgadmin4/servers.json
+    depends_on:
+      - postgres
 
   nginx:
     image: nginx:latest
@@ -30,6 +46,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - webapp
+      - web_server
+
 volumes:
-  postgres_data:
+  postgres:
